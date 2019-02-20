@@ -39,24 +39,24 @@ def bat_win_ini():
 def bat_win_main():
     windll.kernel32.GetSystemPowerStatus(byref(sps))
 
-    bat_info['ACLine'] = '@' if sps.ACLineStatus == 1 else ':' if sps.ACLineStatus == 0 else '?'
+    bat_info['ACLine'] = '$' if sps.ACLineStatus == 1 else '@' if sps.ACLineStatus == 0 else '?'
     print_bat_info('ACLine')
 
-    bat_info['Charging'] = 'y' if sps.BatteryFlag & 0x08 else 'n'
+    bat_info['Charging'] = 'И' if sps.BatteryFlag & 0x08 else 'Ф'
     print_bat_info('Charging')
 
     #t sps.BatteryLifePercent = 98  # test
     #t sps.BatteryLifePercent =  8  # test
-    bat_info['RemainingPercent'] = '%3d%%' % sps.BatteryLifePercent if sps.BatteryLifePercent != -1 else '---%'
+    bat_info['RemainingPercent'] = '%3d%%' % sps.BatteryLifePercent if sps.BatteryLifePercent != -1 else '---%%'
     print_bat_info('RemainingPercent')
 
     rem_sec = sps.BatteryLifeTime
     #t rem_sec = 7527   # test
-    bat_info['RemainingTime'] = '[%d:%02d:%02d]' % ( rem_sec / 3600, rem_sec % 3600 / 60, rem_sec % 60 ) if rem_sec != -1 else '[-:--:--]'
+    bat_info['RemainingTime'] = '[%2d:%02d:%02d]' % ( rem_sec / 3600, rem_sec % 3600 / 60, rem_sec % 60 ) if rem_sec != -1 else '[--:--:--]'
     print_bat_info('RemainingTime')
 
     full_sec = sps.BatteryFullLifeTime
-    bat_info['FullTime'] = '[%d:%02d:%02d]' % ( full_sec / 3600, full_sec % 3600 / 60, full_sec % 60 ) if full_sec != -1 else '[-:--:--]'
+    bat_info['FullTime'] = '[%2d:%02d:%02d]' % ( full_sec / 3600, full_sec % 3600 / 60, full_sec % 60 ) if full_sec != -1 else '[--:--:--]'
     print_bat_info('FullTime')
 
     copy_to_vim()
