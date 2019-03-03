@@ -22,11 +22,13 @@ sps = SystemPowerStatus()
 def bat_win_main():
     windll.kernel32.GetSystemPowerStatus(byref(sps))
 
-    bat_info['ACLine'] = '$' if sps.ACLineStatus == 1 else '@' if sps.ACLineStatus == 0 else '?'
+    ac_line = sps.ACLineStatus
+    charging = sps.BatteryFlag & 0x08
+    status = '?' if ac_line == 255 else '$' if charging else '#' if ac_line == 1 else '@'
+    bat_info['Status'] = status
 
-    bat_info['Charging'] = 'И' if sps.BatteryFlag & 0x08 else 'Ф'
-
-    bat_info['RemainingPercent'] = '%3d%%' % sps.BatteryLifePercent if sps.BatteryLifePercent != -1 else '---%%'
+    percent = sps.BatteryLifePercent
+    bat_info['RemainingPercent'] = '%3d%%' % percent if percent != -1 else '---%%'
 
     rem_sec = sps.BatteryLifeTime
     bat_info['RemainingTime'] = '[%2d:%02d:%02d]' % ( rem_sec / 3600, rem_sec % 3600 / 60, rem_sec % 60 ) if rem_sec != -1 else '[--:--:--]'
